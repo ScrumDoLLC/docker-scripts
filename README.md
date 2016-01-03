@@ -1,6 +1,17 @@
 # docker-scripts
-A set of scripts we use with Docker and Amazon ECS/ECR to manage things.
+A set of scripts we use with Docker and Amazon EC2 Container Service (ECS below)/ECR to manage things.
 
+In general, our continuous integration process goes like this:
+
+ - Check out new version
+ - Build everything
+ - Run unit tests
+ - Run protractor tests (automated in-browser integration tests for angularjs)  (non deployment branches stop here)
+ - Build a docker image
+ - Push that image to ECR
+ - Use update-tasks
+ - Use update-service
+ - Run protractor tests against live server
 
 # update-tasks.py
 
@@ -11,7 +22,7 @@ This script will register a new version of an ECS task definition so it can be u
 
 It copies all settings from the most recent task definition, and sets a new image.
 
-To make it work, we tag our images with a version number in the docker registry in the format of v## (ex. v10 or v100)  (We grab the build number form circle-ci's environment variable representing the build number.)
+To make it work, we tag our images with a version number in the docker registry in the format of v## (ex. v10 or v100)  (We grab the build number form continuous integration environment variable representing the build number.)
 
 You should set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables.  Optional to set AWS_EC2_REGION (defaults to us-east-1)
 
