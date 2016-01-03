@@ -69,17 +69,17 @@ def update_service():
 
     c = 0
     while c < 120:  # only wait around for ~10 minutes (120 * 5 seconds)
-        time.sleep(5)
         c += 1
         service = conn.describe_services(cluster=cluster, services=[service_name])['services'][0]
-        if len(service['deployments']) == 1:
+        if len(service['deployments']) ==1 and service['deployments'][0]['runningCount'] == service['deployments'][0]['desiredCount']:
             print "All done"
             return
 
-        for deployment in service['deployments']:
-            print "{d.taskDefinition} {d.runningCount}/{d.pendingCount}".format(d=deployment)
-            
+        for deployment in service['deployments']:            
+            print "%s %d/%d" % (deployment['taskDefinition'], deployment['runningCount'], deployment['desiredCount'])
+
         print ""
+        time.sleep(5)
 
     raise Exception("Operation timed out")
 
