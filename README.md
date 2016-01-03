@@ -38,6 +38,32 @@ to use the one tagged v248
 
 NOTE: This script does not update any services, so you have to either push a button or run another script to actually do the deployment.
 
+# update-service.py
+
+This is part of our continuous integration environment to deploy changes.
+
+This script will take an ECS service, look up any updated task definitions for the
+task, and update the service with the new version of the task definitions which will
+cause ECS to go through it's deploy process.
+
+After performing the update, this script will wait up to 10 minutes for the deployment to finish.  We use this
+to wait to announce the deployment and to start a round of automated tests on the live servers.
+
+This script is only safe to run if you know that your latest task definition is the one you will want.  Don't use
+it if you use the same taskdef for multiple environments.
+
+```
+usage: update-service.py [-h] --cluster CLUSTER --service SERVICE
+
+Register new versions of task definitions in a service.
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --cluster CLUSTER  ECS cluster to work on
+  --service SERVICE  Service to update
+```
+
+
 # route53-presence.py
 
 We run this script from inside a container in a startup script.  It sets a DNS lookup to itself, utilizing the EC2 meta-info to figure out it's own ip address.  This is a cheap and easy way to do service discovery, there are better ways since changing the host that
