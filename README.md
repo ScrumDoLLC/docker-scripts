@@ -64,4 +64,4 @@ Example:
 
 Registers our local/private (10.\*.\*.\*) address with route53 to the given hostname with a time to live of 60 seconds.
 
-Original version of this script taken from: https://github.com/timelinelabs/docker-route53-presence
+No copyright claimed on this script, original version of this script taken from: https://github.com/timelinelabs/docker-route53-presence
