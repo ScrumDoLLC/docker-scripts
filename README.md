@@ -4,7 +4,8 @@ A set of scripts we use with Docker and Amazon ECS/ECR to manage things.
 
 # update-tasks.py
 
-This is part of our continuous integration environment to deploy changes.
+This is part of our continuous integration environment to deploy changes.  We use this script in our build process after we
+build, tag, and push our docker images.
 
 This script will register a new version of an ECS task definition so it can be used to update a service in our docker cluster.
 
@@ -36,3 +37,31 @@ This would upgrade two tasks, web and celery.  Inside those tasks, it would set 
 to use the one tagged v248
 
 NOTE: This script does not update any services, so you have to either push a button or run another script to actually do the deployment.
+
+# route53-presence.py
+
+We run this script from inside a container in a startup script.  It sets a DNS lookup to itself, utilizing the EC2 meta-info to figure out
+it's own ip address.
+
+```
+usage: route53-presence.py [-h] [--ttl TTL] [--local] hostname
+
+Register or unregister a name in Route53.
+
+positional arguments:
+  hostname    fqdn to manipulate
+
+optional arguments:
+  -h, --help  show this help message and exit
+  --ttl TTL   ttl in seconds, default 600
+  --local     use local IP instead of public
+```  
+
+
+Example:
+
+./route53-presence.py --ttl 60 --local myservice.domain.com
+
+Registers our local/private (10.\*.\*.\*) address with route53 to the given hostname with a time to live of 60 seconds.
+
+Original version of this script taken from: https://github.com/timelinelabs/docker-route53-presence
